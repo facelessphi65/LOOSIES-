@@ -21,7 +21,7 @@
     .container {
       text-align: center;
       padding: 1rem;
-      background-color: #222; /* dark grey for player box */
+      background-color: #222;
       border-radius: 10px;
       box-shadow: 0 0 20px rgba(0,0,0,0.4);
       animation: float 2s ease-in-out infinite;
@@ -38,14 +38,14 @@
     }
 
     h1 {
-      color: white; /* white title */
+      color: white;
       font-size: 2rem;
-      text-align: center; /* centered title */
       margin: 0;
+      text-align: center;
     }
 
     audio {
-      background-color: #333; /* slightly dark grey */
+      background-color: #333;
       border-radius: 8px;
       padding: 0.5rem;
       width: 100%;
@@ -61,8 +61,8 @@
     button {
       padding: 0.5rem 1rem;
       margin: 0 0.5rem;
-      background-color: #111; /* very dark grey */
-      color: white; /* white text/icons */
+      background-color: #111;
+      color: white;
       border: none;
       border-radius: 5px;
       cursor: pointer;
@@ -70,16 +70,16 @@
     }
 
     button:hover {
-      background-color: #444; /* lighter on hover */
+      background-color: #444;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>LOOSIES! 💀</h1> <!-- skull emoji -->
+    <h1>LOOSIES! 💀</h1>
 
     <audio id="player" controls>
-      <source id="trackSource" src="" type="audio/ogg" />
+      <source id="trackSource" src="" />
       Your browser does not support the audio element.
     </audio>
 
@@ -94,7 +94,7 @@
       { src: "music/track1.ogg", title: "PRUDENTIAL!" },
       { src: "music/track2.ogg", title: "DUMBO!" },
       { src: "music/track3.ogg", title: "ANTIDEPRESSANTS!" },
-      { src: "music/track4.ogg", title: "iNFORMANT! interlude" },
+      { src: "music/track4.wav", title: "iNFORMANT! interlude" },  // WAV ONLY
       { src: "music/track5.ogg", title: "nao falar!" }
     ];
 
