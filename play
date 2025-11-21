@@ -79,7 +79,7 @@
     <h1>LOOSIES! 💀</h1> <!-- skull emoji -->
 
     <audio id="player" controls>
-      <source id="trackSource" src="" type="audio/wav" />
+      <source id="trackSource" src="" type="audio/ogg" />
       Your browser does not support the audio element.
     </audio>
 
@@ -91,11 +91,11 @@
 
   <script>
     const tracks = [
-      { src: "music/track1.wav", title: "PRUDENTIAL!" },
-      { src: "music/track2.wav", title: "DUMBO!" },
-      { src: "music/track3.wav", title: "ANTIDEPRESSANTS!" },
-      { src: "music/track4.wav", title: "iNFORMANT! interlude" },
-      { src: "music/track5.wav", title: "nao falar!" }
+      { src: "music/track1.ogg", title: "PRUDENTIAL!" },
+      { src: "music/track2.ogg", title: "DUMBO!" },
+      { src: "music/track3.ogg", title: "ANTIDEPRESSANTS!" },
+      { src: "music/track4.ogg", title: "iNFORMANT! interlude" },
+      { src: "music/track5.ogg", title: "nao falar!" }
     ];
 
     let currentTrack = -1;
