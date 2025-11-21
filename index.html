@@ -14,7 +14,7 @@
       justify-content: center;
       align-items: center;
       background:#ababab url('loosies.jpg') no-repeat center center fixed;
-      background-size: contain;
+      background-size: cover; /* make background cover whole page */
       font-family: sans-serif;
     }
 
@@ -84,8 +84,11 @@
     </audio>
 
     <div class="controls">
-      <button onclick="prevTrack()">⏮️ Prev</button>
-      <button onclick="nextTrack()">Next ⏭️</button>
+      <button id="startBtn" onclick="startPlayer()">▶️ Start Listening</button>
+      <div id="navControls" style="display: none;">
+        <button onclick="prevTrack()">⏮️ Prev</button>
+        <button onclick="nextTrack()">Next ⏭️</button>
+      </div>
     </div>
   </div>
 
@@ -94,13 +97,21 @@
       { src: "music/track1.ogg", title: "PRUDENTIAL!" },
       { src: "music/track2.ogg", title: "DUMBO!" },
       { src: "music/track3.ogg", title: "ANTIDEPRESSANTS!" },
-      { src: "music/track4.wav", title: "iNFORMANT! interlude" },  // WAV ONLY
+      { src: "music/track4.wav", title: "iNFORMANT! interlude" },
       { src: "music/track5.ogg", title: "nao falar!" }
     ];
 
     let currentTrack = -1;
     const player = document.getElementById("player");
     const source = document.getElementById("trackSource");
+    const startBtn = document.getElementById("startBtn");
+    const navControls = document.getElementById("navControls");
+
+    function startPlayer() {
+      loadTrack(0);
+      startBtn.style.display = "none";
+      navControls.style.display = "inline";
+    }
 
     function loadTrack(index) {
       if (index < 0) index = tracks.length - 1;
@@ -122,7 +133,14 @@
     }
 
     player.addEventListener('ended', () => {
-      nextTrack();
+      if (currentTrack < tracks.length - 1) {
+        nextTrack();
+      } else {
+        // Last track reached
+        navControls.style.display = "none";
+        startBtn.style.display = "inline";
+        currentTrack = -1; // Reset
+      }
     });
   </script>
 </body>
