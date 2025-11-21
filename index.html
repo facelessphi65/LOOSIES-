@@ -14,7 +14,7 @@
       justify-content: center;
       align-items: center;
       background:#ababab url('loosies.jpg') no-repeat center center fixed;
-      background-size: cover;
+      background-size: cover; /* make background cover whole page */
       font-family: sans-serif;
     }
 
@@ -72,22 +72,19 @@
     button:hover {
       background-color: #444;
     }
-
-    #trackTitle {
-      color: white;
-      margin-top: 0.5rem;
-    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>LOOSIES! 💀</h1>
 
-    <audio id="player" controls></audio>
-    <p id="trackTitle"></p>
+    <audio id="player" controls>
+      <source id="trackSource" src="" />
+      Your browser does not support the audio element.
+    </audio>
 
     <div class="controls">
-      <button id="startBtn">▶️ Start Listening</button>
+      <button id="startBtn" onclick="startPlayer()">▶️ Start Listening</button>
       <div id="navControls" style="display: none;">
         <button onclick="prevTrack()">⏮️ Prev</button>
         <button onclick="nextTrack()">Next ⏭️</button>
@@ -106,35 +103,44 @@
 
     let currentTrack = -1;
     const player = document.getElementById("player");
-    const trackTitle = document.getElementById("trackTitle");
+    const source = document.getElementById("trackSource");
     const startBtn = document.getElementById("startBtn");
     const navControls = document.getElementById("navControls");
 
     function startPlayer() {
-      currentTrack = 0; // first track
-      loadAndPlay(currentTrack);
+      loadTrack(0);
       startBtn.style.display = "none";
       navControls.style.display = "inline";
     }
 
-    function loadAndPlay(index) {
-      player.src = tracks[index].src;
-      trackTitle.textContent = tracks[index].title;
+    function loadTrack(index) {
+      if (index < 0) index = tracks.length - 1;
+      if (index >= tracks.length) index = 0;
+      currentTrack = index;
+      source.src = tracks[currentTrack].src;
+      player.load();
       player.play();
     }
 
     function prevTrack() {
-      currentTrack = currentTrack <= 0 ? tracks.length - 1 : currentTrack - 1;
-      loadAndPlay(currentTrack);
+      if (currentTrack === -1) loadTrack(0);
+      else loadTrack(currentTrack - 1);
     }
 
     function nextTrack() {
-      currentTrack = currentTrack >= tracks.length - 1 ? 0 : currentTrack + 1;
-      loadAndPlay(currentTrack);
+      if (currentTrack === -1) loadTrack(0);
+      else loadTrack(currentTrack + 1);
     }
 
     player.addEventListener('ended', () => {
-      nextTrack();
+      if (currentTrack < tracks.length - 1) {
+        nextTrack();
+      } else {
+        // Last track reached
+        navControls.style.display = "none";
+        startBtn.style.display = "inline";
+        currentTrack = -1; // Reset
+      }
     });
   </script>
 </body>
