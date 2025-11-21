@@ -6,7 +6,7 @@
   <title>LOOSIES!</title>
   <style>
     body {
-    margin: 0;
+      margin: 0;
       padding: 0;
       height: 100vh;
       width: 100vw;
@@ -72,11 +72,6 @@
     button:hover {
       background-color: #444;
     }
-
-    #trackTitle {
-      color: white;
-      margin-top: 0.5rem;
-    }
   </style>
 </head>
 <body>
@@ -88,14 +83,9 @@
       Your browser does not support the audio element.
     </audio>
 
-    <p id="trackTitle"></p>
-
     <div class="controls">
-      <button id="startBtn">▶️ Start Listening</button>
-      <div id="navControls" style="display: none;">
-        <button onclick="prevTrack()">⏮️ Prev</button>
-        <button onclick="nextTrack()">Next ⏭️</button>
-      </div>
+      <button onclick="prevTrack()">⏮️ Prev</button>
+      <button onclick="nextTrack()">Next ⏭️</button>
     </div>
   </div>
 
@@ -104,44 +94,186 @@
       { src: "music/track1.ogg", title: "PRUDENTIAL!" },
       { src: "music/track2.ogg", title: "DUMBO!" },
       { src: "music/track3.ogg", title: "ANTIDEPRESSANTS!" },
-      { src: "music/track4.wav", title: "iNFORMANT! interlude" },
+      { src: "music/track4.wav", title: "iNFORMANT! interlude" },  // WAV ONLY
       { src: "music/track5.ogg", title: "nao falar!" }
     ];
 
     let currentTrack = -1;
     const player = document.getElementById("player");
     const source = document.getElementById("trackSource");
-    const startBtn = document.getElementById("startBtn");
-    const navControls = document.getElementById("navControls");
-    const trackTitle = document.getElementById("trackTitle");
 
-    // Load track but DO NOT autoplay
     function loadTrack(index) {
       if (index < 0) index = tracks.length - 1;
       if (index >= tracks.length) index = 0;
       currentTrack = index;
       source.src = tracks[currentTrack].src;
-      player.load(); // just load, don't play
-      trackTitle.textContent = tracks[currentTrack].title;
-    }
-
-    function startPlayer() {
-      if (currentTrack === -1) loadTrack(0); // load first track
-      player.play(); // only play on Start
-      startBtn.style.display = "none";
-      navControls.style.display = "inline";
+      player.load();
+      player.play();
     }
 
     function prevTrack() {
       if (currentTrack === -1) loadTrack(0);
       else loadTrack(currentTrack - 1);
-      player.play();
     }
 
     function nextTrack() {
       if (currentTrack === -1) loadTrack(0);
       else loadTrack(currentTrack + 1);
+    }
+
+    player.addEventListener('ended', () => {
+      nextTrack();
+    });
+  </script>
+</body>
+</html>...should have a start listening button like this...<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MidnightBlue</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #100f1f url('midnight blue.jpg') no-repeat center center fixed;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      font-family: sans-serif;
+    }
+
+    .container {
+      text-align: center;
+      padding: 1rem;
+      background-color: #DDDDFF;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      animation: float 2s ease-in-out infinite;
+      margin-top: 180px;
+      transform: translateY(30px);
+      width: 80vw;
+      max-width: 500px;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(30px); }
+      50% { transform: translateY(20px); }
+      100% { transform: translateY(30px); }
+    }
+
+    h1 {
+      color: #1e3a8a;
+      font-size: 2rem;
+    }
+
+    audio {
+      background-color: #DDDDFF;
+      border-radius: 8px;
+      padding: 0.5rem;
+      width: 100%;
+      max-width: 90vw;
+      margin-top: 1rem;
+      outline: none;
+    }
+
+    p {
+      margin-top: 1rem;
+      color: #1e3a8a;
+      font-weight: 500;
+    }
+
+    .controls {
+      margin-top: 1rem;
+    }
+
+    button {
+      padding: 0.5rem 1rem;
+      margin: 0 0.5rem;
+      background-color: #1e3a8a;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #334bb5;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Midnight Blue 🎧</h1>
+
+    <audio id="player" controls>
+      <source id="trackSource" src="" type="audio/mp3" />
+      Your browser does not support the audio element.
+    </audio>
+
+    <div class="controls">
+      <button id="startBtn" onclick="startPlayer()">▶️ Start Listening</button>
+      <div id="navControls" style="display: none;">
+        <button onclick="prevTrack()">⏮️ Prev</button>
+        <button onclick="nextTrack()">Next ⏭️</button>
+      </div>
+    </div>
+
+    <p id="trackTitle">AIRPODS/HEADPHONES RECOMMENDED.</p>
+  </div>
+
+  <script>
+    const tracks = [
+      { src: "music/track1.mp3", title: "50Bands" },
+      { src: "music/track2.mp3", title: "ALIEN THOUGHTS" },
+      { src: "music/track3.mp3", title: "H.E.R Body" },
+      { src: "music/track4.mp3", title: "FRAGULE!!!" },
+      { src: "music/track5.mp3", title: "D.N.D" },
+      { src: "music/track6.mp3", title: "gLuey(BONUS)" }
+    ];
+
+    let currentTrack = -1;
+    const player = document.getElementById("player");
+    const source = document.getElementById("trackSource");
+    const title = document.getElementById("trackTitle");
+    const startBtn = document.getElementById("startBtn");
+    const navControls = document.getElementById("navControls");
+
+    function startPlayer() {
+      loadTrack(0);
+      startBtn.style.display = "none";
+      navControls.style.display = "inline";
+    }
+
+    function loadTrack(index) {
+      if (index < 0) index = tracks.length - 1;
+      if (index >= tracks.length) index = 0;
+      currentTrack = index;
+      source.src = tracks[currentTrack].src;
+      player.load();
       player.play();
+      title.textContent = tracks[currentTrack].title;
+    }
+
+    function prevTrack() {
+      if (currentTrack === -1) {
+        loadTrack(0);
+      } else {
+        loadTrack(currentTrack - 1);
+      }
+    }
+
+    function nextTrack() {
+      if (currentTrack === -1) {
+        loadTrack(0);
+      } else {
+        loadTrack(currentTrack + 1);
+      }
     }
 
     player.addEventListener('ended', () => {
@@ -149,17 +281,12 @@
         nextTrack();
       } else {
         // Last track reached
+        title.textContent = "Playlist ended. Start again?";
         navControls.style.display = "none";
         startBtn.style.display = "inline";
-        currentTrack = -1; // Reset
-        source.src = "";
-        player.load();
-        trackTitle.textContent = "";
+        currentTrack = -1; // Reset to start
       }
     });
-
-    // Ensure no autoplay on page load
-    player.pause();
   </script>
 </body>
 </html>
