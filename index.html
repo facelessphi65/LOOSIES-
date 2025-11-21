@@ -14,7 +14,7 @@
       justify-content: center;
       align-items: center;
       background:#ababab url('loosies.jpg') no-repeat center center fixed;
-      background-size: cover; /* make background cover whole page */
+      background-size: cover; 
       font-family: sans-serif;
     }
 
@@ -72,6 +72,12 @@
     button:hover {
       background-color: #444;
     }
+
+    #trackTitle {
+      margin-top: 1rem;
+      color: white;
+      font-size: 1.1rem;
+    }
   </style>
 </head>
 <body>
@@ -90,6 +96,8 @@
         <button onclick="nextTrack()">Next ⏭️</button>
       </div>
     </div>
+
+    <div id="trackTitle"></div>
   </div>
 
   <script>
@@ -106,6 +114,7 @@
     const source = document.getElementById("trackSource");
     const startBtn = document.getElementById("startBtn");
     const navControls = document.getElementById("navControls");
+    const trackTitle = document.getElementById("trackTitle");
 
     function startPlayer() {
       loadTrack(0);
@@ -118,8 +127,24 @@
       if (index >= tracks.length) index = 0;
       currentTrack = index;
       source.src = tracks[currentTrack].src;
+
+      // Set proper MIME type
+      if (tracks[currentTrack].src.endsWith(".wav")) {
+        source.type = "audio/wav";
+      } else if (tracks[currentTrack].src.endsWith(".ogg")) {
+        source.type = "audio/ogg";
+      } else if (tracks[currentTrack].src.endsWith(".mp3")) {
+        source.type = "audio/mpeg";
+      } else {
+        source.type = "";
+      }
+
       player.load();
-      player.play();
+      player.play().catch(err => {
+        console.log("Playback prevented:", err);
+      });
+
+      trackTitle.textContent = tracks[currentTrack].title;
     }
 
     function prevTrack() {
@@ -136,9 +161,9 @@
       if (currentTrack < tracks.length - 1) {
         nextTrack();
       } else {
-        // Last track reached
         navControls.style.display = "none";
         startBtn.style.display = "inline";
+        trackTitle.textContent = "";
         currentTrack = -1; // Reset
       }
     });
