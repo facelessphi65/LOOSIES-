@@ -13,14 +13,15 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: black;
+      background: black url('loosies.jpg') no-repeat center center fixed;
+      background-size: contain;
       font-family: sans-serif;
     }
 
     .container {
       text-align: center;
       padding: 1rem;
-      background-color: #222; /* dark grey */
+      background-color: #222; /* dark grey for player box */
       border-radius: 10px;
       box-shadow: 0 0 20px rgba(0,0,0,0.4);
       animation: float 2s ease-in-out infinite;
@@ -37,9 +38,9 @@
     }
 
     h1 {
-      color: white;
+      color: white; /* white title */
       font-size: 2rem;
-      text-align: center; /* properly center LOOSIES! */
+      text-align: center; /* centered title */
       margin: 0;
     }
 
@@ -60,8 +61,8 @@
     button {
       padding: 0.5rem 1rem;
       margin: 0 0.5rem;
-      background-color: black;
-      color: white;
+      background-color: #111; /* very dark grey */
+      color: white; /* white text/icons */
       border: none;
       border-radius: 5px;
       cursor: pointer;
@@ -69,18 +70,13 @@
     }
 
     button:hover {
-      background-color: #333;
-    }
-
-    /* Make emojis/icons white */
-    button::before {
-      color: white;
+      background-color: #444; /* lighter on hover */
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>LOOSIES! 💀</h1>
+    <h1>LOOSIES! 💀</h1> <!-- skull emoji -->
 
     <audio id="player" controls>
       <source id="trackSource" src="" type="audio/wav" />
@@ -102,7 +98,7 @@
       { src: "music/track5.wav", title: "nao falar!" }
     ];
 
-    let currentTrack = -1; 
+    let currentTrack = -1;
     const player = document.getElementById("player");
     const source = document.getElementById("trackSource");
 
