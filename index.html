@@ -1,157 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>LOOSIES!</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      height: 100vh;
-      width: 100vw;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background:#ababab url('loosies.jpg') no-repeat center center fixed;
-      background-size: contain; 
-      font-family: sans-serif;
-    }
-
-    .container {
-      text-align: center;
-      padding: 1rem;
-      background-color: #222;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.4);
-      animation: float 2s ease-in-out infinite;
-      margin-top: 180px;
-      transform: translateY(30px);
-      width: 80vw;
-      max-width: 500px;
-    }
-
-    @keyframes float {
-      0% { transform: translateY(30px); }
-      50% { transform: translateY(20px); }
-      100% { transform: translateY(30px); }
-    }
-
-    h1 {
-      color: white;
-      font-size: 2rem;
-      margin: 0;
-      text-align: center;
-    }
-
-    audio {
-      background-color: #333;
-      border-radius: 8px;
-      padding: 0.5rem;
-      width: 100%;
-      max-width: 90vw;
-      margin-top: 1rem;
-      outline: none;
-    }
-
-    .controls {
-      margin-top: 1rem;
-    }
-
-    button {
-      padding: 0.5rem 1rem;
-      margin: 0 0.5rem;
-      background-color: #111;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 1rem;
-    }
-
-    button:hover {
-      background-color: #444;
-    }
-
-    #trackTitle {
-      margin-top: 1rem;
-      color: white;
-      font-size: 1.1rem;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LOOSIES!</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background:#ababab url('loosies.jpg') no-repeat center center fixed;
+    background-size: contain; 
+    font-family: sans-serif;
+  }
+  .container {
+    text-align: center;
+    padding: 1rem;
+    background-color: #222;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    animation: float 2s ease-in-out infinite;
+    margin-top: 180px;
+    transform: translateY(30px);
+    width: 80vw;
+    max-width: 500px;
+  }
+  @keyframes float { 0% { transform: translateY(30px); } 50% { transform: translateY(20px); } 100% { transform: translateY(30px); } }
+  h1 { color: white; font-size: 2rem; margin: 0; text-align: center; }
+  .controls { margin-top: 1rem; }
+  button {
+    padding: 0.5rem 1rem;
+    margin: 0 0.5rem;
+    background-color: #111;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  button:hover { background-color: #444; }
+  #trackTitle { margin-top: 1rem; color: white; font-size: 1.1rem; }
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>LOOSIES! 💀</h1>
-
-    <audio id="player" controls></audio>
-
-    <div class="controls">
-      <button id="startBtn">▶️ Start Listening</button>
-      <div id="navControls" style="display: none;">
-        <button id="prevBtn">⏮️ Prev</button>
-        <button id="nextBtn">Next ⏭️</button>
-      </div>
+<div class="container">
+  <h1>LOOSIES! 💀</h1>
+  <div class="controls">
+    <button id="startBtn">▶️ Start Listening</button>
+    <div id="navControls" style="display:none;">
+      <button id="prevBtn">⏮️ Prev</button>
+      <button id="nextBtn">Next ⏭️</button>
     </div>
-
-    <div id="trackTitle"></div>
   </div>
+  <div id="trackTitle"></div>
+</div>
 
-  <script>
-    const tracks = [
-      { src: "music/track1.ogg", title: "PRUDENTIAL!" },
-      { src: "music/track2.ogg", title: "DUMBO!" },
-      { src: "music/track3.ogg", title: "ANTIDEPRESSANTS!" },
-      { src: "music/track4.ogg", title: "iNFORMANT! interlude" },
-      { src: "music/track5.ogg", title: "nao falar!" }
-    ];
+<script>
+const tracks = [
+  { src: "music/track1.ogg", title: "PRUDENTIAL!" },
+  { src: "music/track2.ogg", title: "DUMBO!" },
+  { src: "music/track3.ogg", title: "ANTIDEPRESSANTS!" },
+  { src: "music/track4.ogg", title: "iNFORMANT! interlude" },
+  { src: "music/track5.ogg", title: "nao falar!" }
+];
 
-    const player = document.getElementById("player");
-    const startBtn = document.getElementById("startBtn");
-    const navControls = document.getElementById("navControls");
-    const trackTitle = document.getElementById("trackTitle");
-    const prevBtn = document.getElementById("prevBtn");
-    const nextBtn = document.getElementById("nextBtn");
+let currentTrack = 0;
+let currentAudio = new Audio();
+let nextAudio = new Audio();
 
-    let currentTrack = 0;
+// Preload all tracks in memory
+const preloaded = tracks.map(t => {
+  const a = new Audio();
+  a.src = t.src;
+  a.preload = "auto";
+  return a;
+});
 
-    // Preload all tracks
-    const preloadedTracks = tracks.map(t => {
-      const a = new Audio();
-      a.src = t.src;
-      a.preload = "auto";
-      return a;
-    });
+const startBtn = document.getElementById("startBtn");
+const navControls = document.getElementById("navControls");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const trackTitle = document.getElementById("trackTitle");
 
-    function loadTrack(index) {
-      currentTrack = index;
-      player.src = tracks[currentTrack].src;
-      player.load();
-      player.play().catch(err => console.log(err));
-      trackTitle.textContent = tracks[currentTrack].title;
-    }
+// Swap tracks using two Audio objects for instant playback
+function playTrack(index) {
+  currentTrack = index;
+  currentAudio = preloaded[currentTrack];
+  trackTitle.textContent = tracks[currentTrack].title;
 
-    function nextTrack() {
-      let nextIndex = (currentTrack + 1) % tracks.length;
-      loadTrack(nextIndex);
-    }
+  // Determine next track
+  let nextIndex = (currentTrack + 1) % tracks.length;
+  nextAudio = preloaded[nextIndex];
 
-    function prevTrack() {
-      let prevIndex = (currentTrack - 1 + tracks.length) % tracks.length;
-      loadTrack(prevIndex);
-    }
+  // When current ends, swap immediately
+  currentAudio.onended = () => {
+    currentAudio = nextAudio;
+    trackTitle.textContent = tracks[(currentTrack + 1) % tracks.length].title;
+    currentTrack = (currentTrack + 1) % tracks.length;
 
-    startBtn.addEventListener("click", () => {
-      loadTrack(0);
-      startBtn.style.display = "none";
-      navControls.style.display = "inline";
-    });
+    // Prepare the next track in advance
+    let subsequentIndex = (currentTrack + 1) % tracks.length;
+    nextAudio = preloaded[subsequentIndex];
 
-    nextBtn.addEventListener("click", nextTrack);
-    prevBtn.addEventListener("click", prevTrack);
+    currentAudio.play();
+  };
 
-    // Automatically play next track instantly
-    player.addEventListener("ended", nextTrack);
-  </script>
+  currentAudio.play();
+}
+
+// Navigation
+nextBtn.addEventListener("click", () => {
+  let nextIndex = (currentTrack + 1) % tracks.length;
+  playTrack(nextIndex);
+});
+prevBtn.addEventListener("click", () => {
+  let prevIndex = (currentTrack - 1 + tracks.length) % tracks.length;
+  playTrack(prevIndex);
+});
+
+// Start button
+startBtn.addEventListener("click", () => {
+  startBtn.style.display = "none";
+  navControls.style.display = "inline";
+  playTrack(0);
+});
+</script>
 </body>
 </html>
