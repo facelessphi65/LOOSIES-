@@ -31,6 +31,7 @@
   }
   @keyframes float { 0% { transform: translateY(30px); } 50% { transform: translateY(20px); } 100% { transform: translateY(30px); } }
   h1 { color: white; font-size: 2rem; margin: 0; text-align: center; }
+  audio { width: 100%; margin-top: 1rem; border-radius: 8px; outline: none; }
   .controls { margin-top: 1rem; }
   button {
     padding: 0.5rem 1rem;
@@ -49,6 +50,9 @@
 <body>
 <div class="container">
   <h1>LOOSIES! 💀</h1>
+
+  <audio id="player" controls></audio>
+
   <div class="controls">
     <button id="startBtn">▶️ Start Listening</button>
     <div id="navControls" style="display:none;">
@@ -56,6 +60,7 @@
       <button id="nextBtn">Next ⏭️</button>
     </div>
   </div>
+
   <div id="trackTitle"></div>
 </div>
 
@@ -68,11 +73,16 @@ const tracks = [
   { src: "music/track5.ogg", title: "nao falar!" }
 ];
 
-let currentTrack = 0;
-let currentAudio = new Audio();
-let nextAudio = new Audio();
+const player = document.getElementById("player");
+const startBtn = document.getElementById("startBtn");
+const navControls = document.getElementById("navControls");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const trackTitle = document.getElementById("trackTitle");
 
-// Preload all tracks in memory
+let currentTrack = 0;
+
+// Preload all tracks
 const preloaded = tracks.map(t => {
   const a = new Audio();
   a.src = t.src;
@@ -80,39 +90,25 @@ const preloaded = tracks.map(t => {
   return a;
 });
 
-const startBtn = document.getElementById("startBtn");
-const navControls = document.getElementById("navControls");
-const prevBtn = document.getElementById("prevBtn");
-const nextBtn = document.getElementById("nextBtn");
-const trackTitle = document.getElementById("trackTitle");
-
-// Swap tracks using two Audio objects for instant playback
+// Play track immediately in the main <audio> element
 function playTrack(index) {
   currentTrack = index;
-  currentAudio = preloaded[currentTrack];
+  player.src = preloaded[currentTrack].src;
+  player.play().catch(err => console.log(err));
   trackTitle.textContent = tracks[currentTrack].title;
 
-  // Determine next track
-  let nextIndex = (currentTrack + 1) % tracks.length;
-  nextAudio = preloaded[nextIndex];
-
-  // When current ends, swap immediately
-  currentAudio.onended = () => {
-    currentAudio = nextAudio;
-    trackTitle.textContent = tracks[(currentTrack + 1) % tracks.length].title;
-    currentTrack = (currentTrack + 1) % tracks.length;
-
-    // Prepare the next track in advance
-    let subsequentIndex = (currentTrack + 1) % tracks.length;
-    nextAudio = preloaded[subsequentIndex];
-
-    currentAudio.play();
-  };
-
-  currentAudio.play();
+  // Preload next track in background
+  const nextIndex = (currentTrack + 1) % tracks.length;
+  preloaded[nextIndex].load();
 }
 
-// Navigation
+// Auto-next track
+player.addEventListener("ended", () => {
+  let nextIndex = (currentTrack + 1) % tracks.length;
+  playTrack(nextIndex);
+});
+
+// Navigation buttons
 nextBtn.addEventListener("click", () => {
   let nextIndex = (currentTrack + 1) % tracks.length;
   playTrack(nextIndex);
