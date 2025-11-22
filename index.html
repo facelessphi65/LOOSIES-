@@ -84,16 +84,13 @@
   <div class="container">
     <h1>LOOSIES! 💀</h1>
 
-    <audio id="player" controls>
-      <source id="trackSource" src="" />
-      Your browser does not support the audio element.
-    </audio>
+    <audio id="player" controls></audio>
 
     <div class="controls">
-      <button id="startBtn" onclick="startPlayer()">▶️ Start Listening</button>
+      <button id="startBtn">▶️ Start Listening</button>
       <div id="navControls" style="display: none;">
-        <button onclick="prevTrack()">⏮️ Prev</button>
-        <button onclick="nextTrack()">Next ⏭️</button>
+        <button id="prevBtn">⏮️ Prev</button>
+        <button id="nextBtn">Next ⏭️</button>
       </div>
     </div>
 
@@ -109,64 +106,52 @@
       { src: "music/track5.ogg", title: "nao falar!" }
     ];
 
-    let currentTrack = -1;
     const player = document.getElementById("player");
-    const source = document.getElementById("trackSource");
     const startBtn = document.getElementById("startBtn");
     const navControls = document.getElementById("navControls");
     const trackTitle = document.getElementById("trackTitle");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
 
-    function startPlayer() {
-      loadTrack(0);
-      startBtn.style.display = "none";
-      navControls.style.display = "inline";
-    }
+    let currentTrack = 0;
+
+    // Preload all tracks
+    const preloadedTracks = tracks.map(t => {
+      const a = new Audio();
+      a.src = t.src;
+      a.preload = "auto";
+      return a;
+    });
 
     function loadTrack(index) {
-      if (index < 0) index = tracks.length - 1;
-      if (index >= tracks.length) index = 0;
       currentTrack = index;
-      source.src = tracks[currentTrack].src;
-
-      // Set proper MIME type
-      if (tracks[currentTrack].src.endsWith(".wav")) {
-        source.type = "audio/wav";
-      } else if (tracks[currentTrack].src.endsWith(".ogg")) {
-        source.type = "audio/ogg";
-      } else if (tracks[currentTrack].src.endsWith(".mp3")) {
-        source.type = "audio/mpeg";
-      } else {
-        source.type = "";
-      }
-
+      player.src = tracks[currentTrack].src;
       player.load();
-      player.play().catch(err => {
-        console.log("Playback prevented:", err);
-      });
-
+      player.play().catch(err => console.log(err));
       trackTitle.textContent = tracks[currentTrack].title;
     }
 
-    function prevTrack() {
-      if (currentTrack === -1) loadTrack(0);
-      else loadTrack(currentTrack - 1);
-    }
-
     function nextTrack() {
-      if (currentTrack === -1) loadTrack(0);
-      else loadTrack(currentTrack + 1);
+      let nextIndex = (currentTrack + 1) % tracks.length;
+      loadTrack(nextIndex);
     }
 
-    player.addEventListener('ended', () => {
-      if (currentTrack < tracks.length - 1) {
-        nextTrack();
-      } else {
-        navControls.style.display = "none";
-        startBtn.style.display = "inline";
-        trackTitle.textContent = "";
-        currentTrack = -1; // Reset
-      }
+    function prevTrack() {
+      let prevIndex = (currentTrack - 1 + tracks.length) % tracks.length;
+      loadTrack(prevIndex);
+    }
+
+    startBtn.addEventListener("click", () => {
+      loadTrack(0);
+      startBtn.style.display = "none";
+      navControls.style.display = "inline";
     });
+
+    nextBtn.addEventListener("click", nextTrack);
+    prevBtn.addEventListener("click", prevTrack);
+
+    // Automatically play next track instantly
+    player.addEventListener("ended", nextTrack);
   </script>
 </body>
 </html>
